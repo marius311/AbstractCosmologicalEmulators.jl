@@ -7,17 +7,17 @@ using SimpleChains
 export AbstractTrainedEmulators, SimpleChainsEmulator
 export maximin_input!, inv_maximin_output!, run_emulator
 
-function maximin_input!(input, in_MinMax)
+function maximin_input!(input::Vector, in_MinMax)
     for i in 1:eachindex(input)
         input[i] .-= in_MinMax[i,1]
         input[i] ./= (in_MinMax[i,2]-in_MinMax[i,1])
     end
 end
 
-function inv_maximin_output!(x, out_MinMax)
-    for i in eachindex(x)
-        x[i] *= (out_MinMax[i,2]-out_MinMax[i,1])
-        x[i] += out_MinMax[i,1]
+function inv_maximin_output!(output::Vector, out_MinMax)
+    for i in eachindex(output)
+        output[i] *= (out_MinMax[i,2]-out_MinMax[i,1])
+        output[i] += out_MinMax[i,1]
     end
 end
 
