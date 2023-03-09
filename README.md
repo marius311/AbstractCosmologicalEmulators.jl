@@ -1,6 +1,4 @@
 # AbstractEmulator.jl
-Repository containing the abstract interface to the emulators used in the CosmologicalEmulators.jl organization.
-
 
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://marcobonici.github.io/FFTLogDocs.jl/dev)
 [![Build status (Github Actions)](https://github.com/marcobonici/FFTLog.jl/workflows/CI/badge.svg)](https://github.com/CosmologicalEmulators/AbstractEmulator.jl/actions)
@@ -9,4 +7,4 @@ Repository containing the abstract interface to the emulators used in the Cosmol
 [![Code Style: Blue](https://img.shields.io/badge/code%20style-blue-4495d1.svg)](https://github.com/invenia/BlueStyle)
 [![ColPrac: Contributor's Guide on Collaborative Practices for Community Packages](https://img.shields.io/badge/ColPrac-Contributor's%20Guide-blueviolet)](https://github.com/SciML/ColPrac)
 
-This repository is intended to be a general repository that can be used
+Repository containing the abstract interface to the emulators used in the CosmologicalEmulators.jl organization. Basic structures and methods are here defined and later used throught all the organization repositories.
