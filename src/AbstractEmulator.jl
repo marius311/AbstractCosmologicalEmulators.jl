@@ -7,10 +7,12 @@ using SimpleChains
 export AbstractTrainedEmulators, SimpleChainsEmulator
 export maximin_input!, inv_maximin_output!, run_emulator
 
-function maximin_input!(x, in_MinMax)
-    for i in eachindex(x)
-        x[i] -= in_MinMax[i,1]
-        x[i] /= (in_MinMax[i,2]-in_MinMax[i,1])
+function maximin_input!(input, in_MinMax)
+    println("Pippo!")
+    param_dim = size(x)[1]
+    for i in 1:param_dim
+        input[i] .-= in_MinMax[i,1]
+        input[i] ./= (in_MinMax[i,2]-in_MinMax[i,1])
     end
 end
 
