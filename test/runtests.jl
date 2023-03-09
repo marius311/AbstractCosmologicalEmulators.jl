@@ -6,6 +6,18 @@ using Test
 m = 100
 n = 300
 InMinMax = hcat(zeros(m), ones(m))
+mlpd = SimpleChain(
+  static(6),
+  TurboDense(tanh, 64),
+  TurboDense(tanh, 64),
+  TurboDense(tanh, 64),
+  TurboDense(tanh, 64),
+  TurboDense(tanh, 64),
+  TurboDense(identity, 40)
+)
+
+weights = SimpleChains.init_params(mlpd)
+emulator = SimpleChainsEmulator(Architecture = mlpd, Weights = weights)
 
 @testset "AbstractEmulators test" begin
     x = rand(m)
@@ -21,4 +33,8 @@ InMinMax = hcat(zeros(m), ones(m))
     inv_maximin_output!(y, InMinMax)
     @test any(x .== X)
     @test any(y .== Y)
+    input = randn(6)
+    stack_input = hcat(input, input)
+    @test any(run_emulator(input, emulator) .== run_emulator(stack_input, emulator)[:,1])
+
 end

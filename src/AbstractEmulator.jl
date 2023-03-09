@@ -44,8 +44,8 @@ abstract type AbstractTrainedEmulators end
     Weights
 end
 
-function run_emulator(input, trained_emulator::SimpleChainsEmulator)
-    return trained_emulator.Architecture(input, trained_emulator.Weights)
+function run_emulator(input, emulator::SimpleChainsEmulator)
+    return emulator.Architecture(input, emulator.Weights)
 end
 
 end # module AbstractEmulator
