@@ -8,9 +8,7 @@ export AbstractTrainedEmulators, SimpleChainsEmulator
 export maximin_input!, inv_maximin_output!, run_emulator
 
 function maximin_input!(input, in_MinMax)
-    println("Pippo!")
-    param_dim = size(x)[1]
-    for i in 1:param_dim
+    for i in 1:eachindex(x)
         input[i] .-= in_MinMax[i,1]
         input[i] ./= (in_MinMax[i,2]-in_MinMax[i,1])
     end
@@ -20,6 +18,22 @@ function inv_maximin_output!(x, out_MinMax)
     for i in eachindex(x)
         x[i] *= (out_MinMax[i,2]-out_MinMax[i,1])
         x[i] += out_MinMax[i,1]
+    end
+end
+
+function maximin_input!(input::Matrix, in_MinMax)
+    dim_pars, _ = size(input)
+    for i in 1:dim_pars
+        input[i,:] .-= in_MinMax[i,1]
+        input[i,:] ./= (in_MinMax[i,2]-in_MinMax[i,1])
+    end
+end
+
+function inv_maximin_output!(output::Matrix, out_MinMax)
+    dim_out, _ = size(output)
+    for i in 1:dim_out
+        output[i,:] .*= (out_MinMax[i,2]-out_MinMax[i,1])
+        output[i,:] .+= out_MinMax[i,1]
     end
 end
 
