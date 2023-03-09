@@ -4,7 +4,7 @@ using Static
 using Test
 
 m = 100
-n = 200
+n = 300
 InMinMax = hcat(zeros(m), ones(m))
 
 @testset "AbstractEmulators test" begin
