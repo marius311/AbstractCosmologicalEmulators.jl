@@ -1,6 +1,5 @@
 # AbstractEmulator.jl
 
-[![](https://img.shields.io/badge/docs-dev-blue.svg)](https://marcobonici.github.io/FFTLogDocs.jl/dev)
 [![Build status (Github Actions)](https://github.com/marcobonici/FFTLog.jl/workflows/CI/badge.svg)](https://github.com/CosmologicalEmulators/AbstractEmulator.jl/actions)
 [![codecov](https://codecov.io/gh/CosmologicalEmulators/AbstractEmulator.jl/branch/main/graph/badge.svg?token=0PYHCWVL67)](https://codecov.io/gh/CosmologicalEmulators/AbstractEmulator.jl)
 ![size](https://img.shields.io/github/repo-size/CosmologicalEmulators/AbstractEmulator.jl)
