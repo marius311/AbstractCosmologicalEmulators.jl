@@ -1,7 +1,6 @@
-module AbstractEmulator
+module AbstractCosmoEmulators
 
 using Base: @kwdef
-using LoopVectorization
 using SimpleChains
 #TODO: add the FluxEmulators
 export AbstractTrainedEmulators, SimpleChainsEmulator
