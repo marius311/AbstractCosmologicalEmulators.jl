@@ -1,4 +1,4 @@
-module AbstractCosmoEmulators
+module AbstractCosmologicalEmulators
 
 using Base: @kwdef
 using SimpleChains

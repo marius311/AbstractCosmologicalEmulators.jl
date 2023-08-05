@@ -1,4 +1,4 @@
-using AbstractCosmoEmulators
+using AbstractCosmologicalEmulators
 using SimpleChains
 using Static
 using Test
