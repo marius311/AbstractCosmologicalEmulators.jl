@@ -1,4 +1,5 @@
 using AbstractCosmologicalEmulators
+using JSON
 using SimpleChains
 using Static
 using Test
@@ -10,12 +11,13 @@ mlpd = SimpleChain(
   static(6),
   TurboDense(tanh, 64),
   TurboDense(tanh, 64),
-  TurboDense(tanh, 64),
+  TurboDense(relu, 64),
   TurboDense(tanh, 64),
   TurboDense(tanh, 64),
   TurboDense(identity, 40)
 )
 
+NN_dict = JSON.parsefile(pwd()*"/testNN.json")
 weights = SimpleChains.init_params(mlpd)
 emulator = SimpleChainsEmulator(Architecture = mlpd, Weights = weights)
 
@@ -35,6 +37,8 @@ emulator = SimpleChainsEmulator(Architecture = mlpd, Weights = weights)
     @test any(y .== Y)
     input = randn(6)
     stack_input = hcat(input, input)
-    @test any(run_emulator(input, emulator) .== run_emulator(stack_input, emulator)[:,1])
-
+    @test isapprox(run_emulator(input, emulator), run_emulator(stack_input, emulator)[:,1])
+    @test instantiate_NN(NN_dict) == mlpd
+    NN_dict["layers"]["layer_1"]["activation_function"]= "adremxud"
+    @test_throws ErrorException instantiate_NN(NN_dict)
 end
