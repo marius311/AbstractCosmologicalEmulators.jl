@@ -2,6 +2,7 @@ module AbstractCosmologicalEmulators
 
 using Base: @kwdef
 using SimpleChains
+
 export AbstractTrainedEmulators, SimpleChainsEmulator
 export maximin_input!, inv_maximin_output!, run_emulator, instantiate_NN
 
