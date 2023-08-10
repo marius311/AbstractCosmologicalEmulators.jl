@@ -4,7 +4,8 @@ using Base: @kwdef
 using SimpleChains
 
 export AbstractTrainedEmulators, SimpleChainsEmulator
-export maximin_input!, inv_maximin_output!, run_emulator, instantiate_NN
+export maximin_input!, inv_maximin_output!, run_emulator, instantiate_NN,
+get_emulator_description
 
 function maximin_input!(input::Vector, in_MinMax)
     for i in eachindex(input)
@@ -72,7 +73,7 @@ function instantiate_NN(input_dict::Dict)
     TurboDense(identity, input_dict["n_output_features"]))
 end
 
-function emulator_description(input_dict::Dict)
+function get_emulator_description(input_dict::Dict)
     if haskey(input_dict, "parameters")
         println("The parameters the model has been trained are, in the following order: "*input_dict["parameters"]*".")
     else
