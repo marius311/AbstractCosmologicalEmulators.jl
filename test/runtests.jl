@@ -41,4 +41,5 @@ emulator = SimpleChainsEmulator(Architecture = mlpd, Weights = weights)
     @test instantiate_NN(NN_dict) == mlpd
     NN_dict["layers"]["layer_1"]["activation_function"]= "adremxud"
     @test_throws ErrorException instantiate_NN(NN_dict)
+    @test_logs (:warn, "We don't know which parameters were included in the emulators training space. Use this trained emulator with caution!") AbstractCosmologicalEmulators.emulator_description(Dict("pippo" => "franco"))
 end
