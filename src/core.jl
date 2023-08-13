@@ -15,10 +15,6 @@ end
     Device::Lux.AbstractLuxDevice
 end
 
-function run_emulator(input, emulator::SimpleChainsEmulator)
-    return emulator.Architecture(input, emulator.Weights)
-end
-
 function run_emulator(input, emulator::LuxEmulator)
     return emulator.Device(Lux.apply(emulator.Model.model, emulator.Device(input),
                            emulator.Model.parameters, emulator.Model.states)[1])
