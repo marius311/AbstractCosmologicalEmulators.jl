@@ -55,16 +55,16 @@ function _create_layer(input_dict::Dict)
     elseif input_dict["activation_function"] == "relu"
         act_func = SimpleChains.relu
     else
-        error("Error in the Activation Function! You choose "*
-        string(input_dict["activation_function"])*" which we do not support!")
+        error("Error in the Activation Function. You choose "*
+        string(input_dict["activation_function"])*" which we do not support.")
     end
     return TurboDense(act_func, Int(input_dict["n_neurons"]))
 end
 
 function _create_hidden_layers_tuple(input_dict::Dict)
     n_hidden_layers = input_dict["n_hidden_layers"]
-    hid_lay_tuple = (_create_layer(input_dict["layers"]["layer_"*string(i)]) for i in 1:n_hidden_layers)
-    return hid_lay_tuple
+    return (_create_layer(input_dict["layers"]["layer_"*string(i)])
+                     for i in 1:n_hidden_layers)
 end
 
 function instantiate_NN(input_dict::Dict)
@@ -77,7 +77,7 @@ function get_emulator_description(input_dict::Dict)
     if haskey(input_dict, "parameters")
         println("The parameters the model has been trained are, in the following order: "*input_dict["parameters"]*".")
     else
-        @warn "We don't know which parameters were included in the emulators training space. Use this trained emulator with caution!"
+        @warn "We do not know which parameters were included in the emulators training space. Use this trained emulator with caution!"
     end
     if haskey(input_dict, "author")
         println("The emulator has been trained by "*input_dict["author"]*".")
