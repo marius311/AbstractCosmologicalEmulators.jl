@@ -42,6 +42,7 @@ emulator = SimpleChainsEmulator(Architecture = mlpd, Weights = weights)
     lux_emu = instantiate_lux_emulator(NN_dict, weights)
     NN_dict["layers"]["layer_1"]["activation_function"]= "adremxud"
     @test_throws ErrorException instantiate_NN(NN_dict)
+    @test_throws ErrorException instantiate_lux_emulator(NN_dict, weights)
     get_emulator_description(NN_dict["emulator_description"])
     @test_logs (:warn, "We do not know which parameters were included in the emulators training space. Use this trained emulator with caution!") AbstractCosmologicalEmulators.get_emulator_description(Dict("pippo" => "franco"))
     @test isapprox(run_emulator(input, emulator), run_emulator(input, lux_emu))

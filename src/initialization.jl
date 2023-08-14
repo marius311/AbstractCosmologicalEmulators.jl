@@ -74,7 +74,6 @@ function _create_i_array(in_array::Vector, out_array::Vector)
     for i in 1:length(i_array)-1
         i_array[i+1] = i_array[i]+in_array[i]*out_array[i]+out_array[i]
     end
-    @info i_array
     return i_array
 end
 
