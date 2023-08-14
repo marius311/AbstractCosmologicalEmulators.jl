@@ -13,7 +13,7 @@ end
 @kwdef mutable struct LuxEmulator <: AbstractTrainedEmulators
     Model
     Parameters
-    State
+    States
     Device::Lux.AbstractLuxDevice
 end
 
