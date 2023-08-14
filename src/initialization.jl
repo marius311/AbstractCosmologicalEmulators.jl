@@ -10,18 +10,6 @@ function _create_layer(input_dict::Dict)
     return TurboDense(act_func, Int(input_dict["n_neurons"]))
 end
 
-function _create_layer_lux(activation_function, n_in::Int, n_out::Int)
-    if activation_function == "tanh"
-        act_func = Lux.tanh
-    elseif activation_function == "relu"
-        act_func = Lux.relu
-    else
-        error("Error in the Activation Function. You choose "*
-        string(activation_function)*" which we do not support.")
-    end
-    return Dense(n_in => n_out, act_func)
-end
-
 function _create_hidden_layers_tuple(input_dict::Dict)
     n_hidden_layers = input_dict["n_hidden_layers"]
     return (_create_layer(input_dict["layers"]["layer_"*string(i)])
