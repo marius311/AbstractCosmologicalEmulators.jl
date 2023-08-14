@@ -1,4 +1,4 @@
-function _create_layer(input_dict::Dict)
+function _get_layer_simplechains(input_dict::Dict)
     if input_dict["activation_function"] == "tanh"
         act_func = SimpleChains.tanh
     elseif input_dict["activation_function"] == "relu"
@@ -10,13 +10,13 @@ function _create_layer(input_dict::Dict)
     return TurboDense(act_func, Int(input_dict["n_neurons"]))
 end
 
-function _create_hidden_layers_tuple(input_dict::Dict)
+function _get_hidden_layers_simplechains(input_dict::Dict)
     n_hidden_layers = input_dict["n_hidden_layers"]
-    return (_create_layer(input_dict["layers"]["layer_"*string(i)])
+    return (_get_layer_simplechains(input_dict["layers"]["layer_"*string(i)])
                      for i in 1:n_hidden_layers)
 end
 
-function _create_layer_lux(activation_function, n_in::Int, n_out::Int)
+function _get_layer_lux(activation_function, n_in::Int, n_out::Int)
     if activation_function == "tanh"
         act_func = Lux.tanh
     elseif activation_function == "relu"
@@ -28,34 +28,34 @@ function _create_layer_lux(activation_function, n_in::Int, n_out::Int)
     return Dense(n_in => n_out, act_func)
 end
 
-function _create_hidden_layers_tuple_lux(input_dict::Dict)
+function _get_layers_lux(input_dict::Dict)
     n_hidden_layers = input_dict["n_hidden_layers"]
-    in_array, out_array = _create_in_out_arrays(input_dict)
-    intermediate = (_create_layer_lux(
+    in_array, out_array = _get_in_out_arrays(input_dict)
+    intermediate = (_get_layer_lux(
         input_dict["layers"]["layer_"*string(j)]["activation_function"],
         in_array[j], out_array[j]) for j in 1:n_hidden_layers)
     return (intermediate..., Dense(in_array[end],out_array[end]))
 end
 
-function instantiate_NN(input_dict::Dict)
-    hidden_layer_tuple = _create_hidden_layers_tuple(input_dict)
+function _get_nn_simplechains(input_dict::Dict)
+    hidden_layer_tuple = _get_hidden_layers_simplechains(input_dict)
     return SimpleChain(static(input_dict["n_input_features"]), hidden_layer_tuple...,
     TurboDense(identity, input_dict["n_output_features"]))
 end
 
-function instantiate_NN_lux(input_dict::Dict)
-    hidden_layer_tuple = _create_hidden_layers_tuple_lux(input_dict)
+function _get_nn_lux(input_dict::Dict)
+    hidden_layer_tuple = _get_layers_lux(input_dict)
     return Chain(hidden_layer_tuple...)
 end
 
-function _create_weight_bias(i::Int, n_in::Int, n_out::Int, weight_bias, NN_dict::Dict)
+function _get_weight_bias(i::Int, n_in::Int, n_out::Int, weight_bias, NN_dict::Dict)
     weight = reshape(weight_bias[i:i+n_out*n_in-1], n_out, n_in)
     bias = weight_bias[i+n_out*n_in:i+n_out*n_in+n_out-1]
     i += n_out*n_in+n_out-1+1
     return (weight = weight, bias = bias)
 end
 
-function _create_in_out_arrays(NN_dict::Dict)
+function _get_in_out_arrays(NN_dict::Dict)
     n = NN_dict["n_hidden_layers"]
     in_array  = zeros(Int64, n+1)
     out_array = zeros(Int64, n+1)
@@ -68,7 +68,7 @@ function _create_in_out_arrays(NN_dict::Dict)
     return in_array, out_array
 end
 
-function _create_i_array(in_array::Vector, out_array::Vector)
+function _get_i_array(in_array::Vector, out_array::Vector)
     i_array = similar(in_array)
     i_array[1] = 1
     for i in 1:length(i_array)-1
@@ -77,28 +77,52 @@ function _create_i_array(in_array::Vector, out_array::Vector)
     return i_array
 end
 
-function _create_lux_params(NN_dict::Dict, weights)
-    in_array, out_array = _create_in_out_arrays(NN_dict)
-    i_array = _create_i_array(in_array, out_array)
-    params = [_create_weight_bias(i_array[j], in_array[j], out_array[j], weights, NN_dict) for j in 1:NN_dict["n_hidden_layers"]+1]
+function _get_lux_params(NN_dict::Dict, weights)
+    in_array, out_array = _get_in_out_arrays(NN_dict)
+    i_array = _get_i_array(in_array, out_array)
+    params = [_get_weight_bias(i_array[j], in_array[j], out_array[j], weights, NN_dict) for j in 1:NN_dict["n_hidden_layers"]+1]
     layer = [Symbol("layer_"*string(j)) for j in 1:NN_dict["n_hidden_layers"]+1]
     return (; zip(layer, params)...)
 end
 
-function _create_lux_states(NN_dict::Dict)
+function _get_lux_states(NN_dict::Dict)
     params = [NamedTuple() for j in 1:NN_dict["n_hidden_layers"]+1]
     layer = [Symbol("layer_"*string(j)) for j in 1:NN_dict["n_hidden_layers"]+1]
     return (; zip(layer, params)...)
 end
 
-function _create_lux_params_states(NN_dict::Dict, weights)
-    return _create_lux_params(NN_dict, weights), _create_lux_states(NN_dict)
+function _get_lux_params_states(NN_dict::Dict, weights)
+    return _get_lux_params(NN_dict, weights), _get_lux_states(NN_dict)
 
 end
 
-function instantiate_lux_emulator(NN_dict::Dict, weight)
-    params, states = _create_lux_params_states(NN_dict, weight)
-    model = instantiate_NN_lux(NN_dict)
+function _init_luxemulator(NN_dict::Dict, weight)
+    params, states = _get_lux_params_states(NN_dict, weight)
+    model = _get_nn_lux(NN_dict)
+    if haskey(NN_dict, "emulator_description")
+        nn_descript = NN_dict["emulator_description"]
+    else
+        nn_descript = Dict()
+    end
     return LuxEmulator(Model = model, Parameters = params, States = states,
-    Device = Lux.cpu_device())
+    Device = Lux.cpu_device(), Description= nn_descript)
+end
+
+function init_emulator(NN_dict::Dict, weight, ::Type{LuxEmulator})
+    return _init_luxemulator(NN_dict, weight)
+end
+
+function _init_simplechainsemulator(NN_dict::Dict, weight)
+    architecture = _get_nn_simplechains(NN_dict)
+    if haskey(NN_dict, "emulator_description")
+        nn_descript = NN_dict["emulator_description"]
+    else
+        nn_descript = Dict()
+    end
+    return SimpleChainsEmulator(Architecture = architecture, Weights = weight,
+    Description= nn_descript)
+end
+
+function init_emulator(NN_dict::Dict, weight, ::Type{SimpleChainsEmulator})
+    return _init_simplechainsemulator(NN_dict, weight)
 end

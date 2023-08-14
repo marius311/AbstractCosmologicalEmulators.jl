@@ -15,6 +15,7 @@ end
     Parameters
     States
     Device::Lux.AbstractLuxDevice
+    Description::Dict = Dict()
 end
 
 function run_emulator(input, emulator::LuxEmulator)

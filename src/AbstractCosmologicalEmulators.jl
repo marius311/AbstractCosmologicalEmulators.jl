@@ -5,8 +5,8 @@ using Lux
 using SimpleChains
 
 export AbstractTrainedEmulators, LuxEmulator, SimpleChainsEmulator
-export maximin_input!, inv_maximin_output!, run_emulator, instantiate_NN,
-instantiate_lux_emulator, get_emulator_description
+export maximin_input!, inv_maximin_output!, run_emulator, get_emulator_description,
+init_emulator
 
 include("core.jl")
 include("initialization.jl")
