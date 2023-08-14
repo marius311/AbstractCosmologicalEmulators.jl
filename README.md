@@ -16,7 +16,8 @@ Step | Status| Comment
 :------------ | :-------------| :-------------
 Interface with `SimpleChains.jl` | :heavy_check_mark: | Implemented
 Support for vectorization | :white_check_mark: | Implemented, needs some polishing
-Interface with `Lux.jl` | :construction: | WIP
+Interface with `Lux.jl` | :white_check_mark: | Implemented, needs some polishing
+Robust emulators initialization | :white_check_mark: | Implemented, needs some polishing
 GPU support | :construction: | WIP
 Stable API | :construction: | WIP
 
