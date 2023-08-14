@@ -30,7 +30,7 @@ end
 
 function _create_hidden_layers_tuple_lux(input_dict::Dict)
     n_hidden_layers = input_dict["n_hidden_layers"]
-    in_array, out_array = create_in_out_arrays(input_dict)
+    in_array, out_array = _create_in_out_arrays(input_dict)
     intermediate = (_create_layer_lux(
         input_dict["layers"]["layer_"*string(j)]["activation_function"],
         in_array[j], out_array[j]) for j in 1:n_hidden_layers)
@@ -48,14 +48,14 @@ function instantiate_NN_lux(input_dict::Dict)
     return Chain(hidden_layer_tuple...)
 end
 
-function create_weight_bias(i::Int, n_in::Int, n_out::Int, weight_bias, NN_dict::Dict)
+function _create_weight_bias(i::Int, n_in::Int, n_out::Int, weight_bias, NN_dict::Dict)
     weight = reshape(weight_bias[i:i+n_out*n_in-1], n_out, n_in)
     bias = weight_bias[i+n_out*n_in:i+n_out*n_in+n_out-1]
     i += n_out*n_in+n_out-1+1
     return (weight = weight, bias = bias)
 end
 
-function create_in_out_arrays(NN_dict::Dict)
+function _create_in_out_arrays(NN_dict::Dict)
     n = NN_dict["n_hidden_layers"]
     in_array  = zeros(Int64, n+1)
     out_array = zeros(Int64, n+1)
@@ -68,7 +68,7 @@ function create_in_out_arrays(NN_dict::Dict)
     return in_array, out_array
 end
 
-function create_i_array(in_array::Vector, out_array::Vector)
+function _create_i_array(in_array::Vector, out_array::Vector)
     i_array = similar(in_array)
     i_array[1] = 1
     for i in 1:length(i_array)-1
@@ -78,27 +78,27 @@ function create_i_array(in_array::Vector, out_array::Vector)
     return i_array
 end
 
-function create_lux_params(NN_dict::Dict, weights)
-    in_array, out_array = create_in_out_arrays(NN_dict)
-    i_array = create_i_array(in_array, out_array)
-    params = [create_weight_bias(i_array[j], in_array[j], out_array[j], weights, NN_dict) for j in 1:NN_dict["n_hidden_layers"]+1]
+function _create_lux_params(NN_dict::Dict, weights)
+    in_array, out_array = _create_in_out_arrays(NN_dict)
+    i_array = _create_i_array(in_array, out_array)
+    params = [_create_weight_bias(i_array[j], in_array[j], out_array[j], weights, NN_dict) for j in 1:NN_dict["n_hidden_layers"]+1]
     layer = [Symbol("layer_"*string(j)) for j in 1:NN_dict["n_hidden_layers"]+1]
     return (; zip(layer, params)...)
 end
 
-function create_lux_states(NN_dict::Dict)
+function _create_lux_states(NN_dict::Dict)
     params = [NamedTuple() for j in 1:NN_dict["n_hidden_layers"]+1]
     layer = [Symbol("layer_"*string(j)) for j in 1:NN_dict["n_hidden_layers"]+1]
     return (; zip(layer, params)...)
 end
 
-function create_lux_params_states(NN_dict::Dict, weights)
-    return create_lux_params(NN_dict, weights), create_lux_states(NN_dict)
+function _create_lux_params_states(NN_dict::Dict, weights)
+    return _create_lux_params(NN_dict, weights), _create_lux_states(NN_dict)
 
 end
 
 function instantiate_lux_emulator(NN_dict::Dict, weight)
-    params, states = create_lux_params_states(NN_dict, weight)
+    params, states = _create_lux_params_states(NN_dict, weight)
     model = instantiate_NN_lux(input_dict::Dict)
     return LuxEmulator(Model = model, Parameters = params, State = states,
     Device = Lux.cpu_device())

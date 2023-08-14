@@ -39,7 +39,7 @@ emulator = SimpleChainsEmulator(Architecture = mlpd, Weights = weights)
     stack_input = hcat(input, input)
     @test isapprox(run_emulator(input, emulator), run_emulator(stack_input, emulator)[:,1])
     @test instantiate_NN(NN_dict) == mlpd
-    lux_emu = instantiate_lux_emulator(NN_dict, weight)
+    lux_emu = instantiate_lux_emulator(NN_dict, weights)
     NN_dict["layers"]["layer_1"]["activation_function"]= "adremxud"
     @test_throws ErrorException instantiate_NN(NN_dict)
     get_emulator_description(NN_dict["emulator_description"])
