@@ -99,7 +99,7 @@ end
 
 function instantiate_lux_emulator(NN_dict::Dict, weight)
     params, states = _create_lux_params_states(NN_dict, weight)
-    model = instantiate_NN_lux(input_dict::Dict)
+    model = instantiate_NN_lux(NN_dict)
     return LuxEmulator(Model = model, Parameters = params, State = states,
     Device = Lux.cpu_device())
 end
