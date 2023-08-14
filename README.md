@@ -15,8 +15,9 @@ In this moment the emulators here used are based only on the [`SimpleChains.jl`]
 Step | Status| Comment
 :------------ | :-------------| :-------------
 Interface with `SimpleChains.jl` | :heavy_check_mark: | Implemented
-Support for vectorization | :white_check_mark: | Implemented, needs some polishing
-Interface with `Lux.jl` | :construction: | WIP
+Support for vectorization | (:heavy_check_mark:) | Implemented, needs some polishing
+Interface with `Lux.jl` | (:heavy_check_mark:) | Implemented, needs some polishing
+Robust emulators initialization | (:heavy_check_mark:) | Implemented, needs some polishing
 GPU support | :construction: | WIP
 Stable API | :construction: | WIP
 
