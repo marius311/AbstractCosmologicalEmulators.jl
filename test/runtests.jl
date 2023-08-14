@@ -19,7 +19,8 @@ mlpd = SimpleChain(
 
 NN_dict = JSON.parsefile(pwd()*"/testNN.json")
 weights = SimpleChains.init_params(mlpd)
-emulator = SimpleChainsEmulator(Architecture = mlpd, Weights = weights)
+sc_emu = SimpleChainsEmulator(Architecture = mlpd, Weights = weights,
+                              Description = NN_dict["emulator_description"])
 
 @testset "AbstractEmulators test" begin
     x = rand(m)
@@ -37,10 +38,18 @@ emulator = SimpleChainsEmulator(Architecture = mlpd, Weights = weights)
     @test any(y .== Y)
     input = randn(6)
     stack_input = hcat(input, input)
-    @test isapprox(run_emulator(input, emulator), run_emulator(stack_input, emulator)[:,1])
-    @test instantiate_NN(NN_dict) == mlpd
+    @test isapprox(run_emulator(input, sc_emu), run_emulator(stack_input, sc_emu)[:,1])
+    @test AbstractCosmologicalEmulators._get_nn_simplechains(NN_dict) == mlpd
+    lux_emu = init_emulator(NN_dict, weights, LuxEmulator)
+    sc_emu_check = init_emulator(NN_dict, weights, SimpleChainsEmulator)
+    @test sc_emu_check.Architecture == sc_emu.Architecture
+    @test sc_emu_check.Weights == sc_emu.Weights
+    @test sc_emu_check.Description == sc_emu.Description
     NN_dict["layers"]["layer_1"]["activation_function"]= "adremxud"
-    @test_throws ErrorException instantiate_NN(NN_dict)
+    @test_throws ErrorException AbstractCosmologicalEmulators._get_nn_simplechains(NN_dict)
+    @test_throws ErrorException AbstractCosmologicalEmulators._get_nn_lux(NN_dict)
     get_emulator_description(NN_dict["emulator_description"])
-    @test_logs (:warn, "We don't know which parameters were included in the emulators training space. Use this trained emulator with caution!") AbstractCosmologicalEmulators.get_emulator_description(Dict("pippo" => "franco"))
+    @test_logs (:warn, "We do not know which parameters were included in the emulators training space. Use this trained emulator with caution!") AbstractCosmologicalEmulators.get_emulator_description(Dict("pippo" => "franco"))
+    @test_logs (:warn, "No emulator description found!") AbstractCosmologicalEmulators._get_emulator_description_dict(Dict("pippo" => "franco"))
+    @test isapprox(run_emulator(input, sc_emu), run_emulator(input, lux_emu))
 end
