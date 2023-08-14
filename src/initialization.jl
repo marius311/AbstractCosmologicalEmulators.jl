@@ -109,7 +109,7 @@ function create_lux_params_states(NN_dict::Dict, weights)
 
 end
 
-function instantiate_lux_emulator(NN_dict::Dict, weight::Vector)
+function instantiate_lux_emulator(NN_dict::Dict, weight)
     params, states = create_lux_params_states(NN_dict, weight)
     model = instantiate_NN_lux(input_dict::Dict)
     return LuxEmulator(Model = model, Parameters = params, State = states,
