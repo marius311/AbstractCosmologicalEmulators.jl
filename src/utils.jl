@@ -45,3 +45,7 @@ function get_emulator_description(input_dict::Dict)
     end
     return nothing
 end
+
+function get_emulator_description(emu::AbstractTrainedEmulators)
+    get_emulator_description(emu.Description)
+end
