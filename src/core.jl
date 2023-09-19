@@ -18,7 +18,9 @@ end
     Description::Dict = Dict()
 end
 
+Adapt.@adapt_structure LuxEmulator
+
 function run_emulator(input, emulator::LuxEmulator)
-    return emulator.Device(Lux.apply(emulator.Model, emulator.Device(input),
+    return (Lux.apply(emulator.Model, (input),
                            emulator.Parameters, emulator.States)[1])
 end

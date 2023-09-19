@@ -1,31 +1,9 @@
-function maximin_input!(input::Vector, in_MinMax)
-    for i in eachindex(input)
-        input[i] -= in_MinMax[i,1]
-        input[i] /= (in_MinMax[i,2]-in_MinMax[i,1])
-    end
+function maximin_input!(input, in_MinMax)
+    @. input = (input - in_MinMax[:,1]) ./ (in_MinMax[:,2] - in_MinMax[:,1])
 end
 
-function inv_maximin_output!(output::Vector, out_MinMax)
-    for i in eachindex(output)
-        output[i] *= (out_MinMax[i,2]-out_MinMax[i,1])
-        output[i] += out_MinMax[i,1]
-    end
-end
-
-function maximin_input!(input::Matrix, in_MinMax)
-    dim_pars, _ = size(input)
-    for i in 1:dim_pars
-        input[i,:] .-= in_MinMax[i,1]
-        input[i,:] ./= (in_MinMax[i,2]-in_MinMax[i,1])
-    end
-end
-
-function inv_maximin_output!(output::Matrix, out_MinMax)
-    dim_out, _ = size(output)
-    for i in 1:dim_out
-        output[i,:] .*= (out_MinMax[i,2]-out_MinMax[i,1])
-        output[i,:] .+= out_MinMax[i,1]
-    end
+function inv_maximin_output!(output, out_MinMax)
+    @. output = output .* (out_MinMax[:,2] - out_MinMax[:,1]) + out_MinMax[:,1]
 end
 
 function get_emulator_description(input_dict::Dict)

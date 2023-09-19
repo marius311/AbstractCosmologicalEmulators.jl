@@ -1,6 +1,7 @@
 module AbstractCosmologicalEmulators
 
 using Base: @kwdef
+using Adapt
 using Lux
 using SimpleChains
 
